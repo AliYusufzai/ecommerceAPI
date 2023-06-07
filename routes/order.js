@@ -2,7 +2,7 @@ const Order = require("../models/Order");
 const {
   verifyToken,
   verifyTokenAndAuthorization,
-  verifyTokenAndAdmin,
+  verifyTokenAndAdmin
 } = require("./verifyToken");
 
 const router = require("express").Router();
@@ -26,7 +26,7 @@ router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
     const updatedOrder = await Order.findByIdAndUpdate(
       req.params.id,
       {
-        $set: req.body,
+        $set: req.body
       },
       { new: true }
     );
@@ -50,6 +50,7 @@ router.delete("/:id", verifyTokenAndAdmin, async (req, res) => {
 router.get("/find/:userId", verifyTokenAndAuthorization, async (req, res) => {
   try {
     const orders = await Order.find({ userId: req.params.userId });
+
     res.status(200).json(orders);
   } catch (err) {
     res.status(500).json(err);
@@ -80,15 +81,15 @@ router.get("/income", verifyTokenAndAdmin, async (req, res) => {
       {
         $project: {
           month: { $month: "$createdAt" },
-          sales: "$amount",
-        },
+          sales: "$amount"
+        }
       },
       {
         $group: {
           _id: "$month",
-          total: { $sum: "$sales" },
-        },
-      },
+          total: { $sum: "$sales" }
+        }
+      }
     ]);
     res.status(200).json(income);
   } catch (err) {

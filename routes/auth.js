@@ -15,15 +15,24 @@ router.post("/registration", async (req, res) => {
     phone: req.body.phone,
     country: req.body.country,
     email: req.body.email,
+    checked: req.body.checked,
     password: CryptoJS.AES.encrypt(
       req.body.password,
       process.env.PASS_SEC
     ).toString(),
+    confirmpassword: CryptoJS.AES.encrypt(
+      req.body.confirmpassword,
+      process.env.PASS_SEC
+    ).toString()
   });
   try {
     //saving the input from user into database using save method
-    const savedUser = await newUser.save();
-    res.status(200).json(savedUser);
+    if (req.body.password === req.body.confirmpassword) {
+      const savedUser = await newUser.save();
+      res.status(200).json(savedUser);
+    } else {
+      res.send("password are not matching");
+    }
   } catch (err) {
     console.log(err);
   }
