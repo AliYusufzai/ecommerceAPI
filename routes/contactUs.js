@@ -6,9 +6,9 @@ router.post("/", async (req, res) => {
   const newContact = Contact(req.body);
   try {
     const saveContact = await newContact.save();
-    res.status(200).json(saveContact);
-  } catch (err) {
-    res.status(500).json(err);
+    res.status(200).json({ success: "Your Feedback has been received" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

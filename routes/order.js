@@ -1,4 +1,5 @@
 const Order = require("../models/Order");
+const Product = require("../models/Product");
 const {
   verifyToken,
   verifyTokenAndAuthorization,
@@ -30,6 +31,7 @@ router.put("/:id", verifyTokenAndAdmin, async (req, res) => {
       },
       { new: true }
     );
+
     res.status(200).json(updatedOrder);
   } catch (err) {
     res.status(500).json(err);

@@ -106,7 +106,10 @@ router.get("/", async (req, res) => {
         }
       });
     } else {
-      products = await Product.find().skip(skip).limit(limit);
+      products = await Product.find()
+        .skip(skip)
+        .limit(limit)
+        .populate("categories");
     }
     res.status(200).json(products);
   } catch (err) {
@@ -153,20 +156,10 @@ router.post("/review", verifyTokenAndAuthorization, async (req, res) => {
       comment
     };
     const product = await Product.findById(productId);
-    console.log(product);
-    const isReviewed = product.reviews.find(
-      (r) => r.user.toString() === req.user.id.toString()
+    product.reviews = product.reviews.filter(
+      (rev) => rev.user.toString() !== user._id.toString()
     );
-    console.log(isReviewed);
-    if (isReviewed) {
-      product.reviews.forEach((review) => {
-        if (review.user.toString() === req.user.id.toString()) {
-          review.comment = comment;
-        }
-      });
-    } else {
-      product.reviews.push(review);
-    }
+    product.reviews.push(review);
     await product.save();
     res.status(200).json(product);
   } catch (err) {

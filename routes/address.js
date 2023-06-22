@@ -5,7 +5,7 @@ const router = require("express").Router();
 const mongoose = require("mongoose");
 
 //CREATE & UPDATE ADDRESS
-router.post("/address", verifyTokenAndAuthorization, async (req, res) => {
+router.post("/", verifyTokenAndAuthorization, async (req, res) => {
   try {
     const userId = req.user.id;
     const addressData = await Address.findOne({ userId });
@@ -40,18 +40,14 @@ router.post("/address", verifyTokenAndAuthorization, async (req, res) => {
   }
 });
 
-router.get(
-  "/address/:userId",
-  verifyTokenAndAuthorization,
-  async (req, res) => {
-    try {
-      const address = await Address.findOne({ userId: req.params.userId });
-      res.status(200).json(address);
-    } catch (err) {
-      res.status(500).json(err);
-    }
+router.get("/:userId", verifyTokenAndAuthorization, async (req, res) => {
+  try {
+    const address = await Address.findOne({ userId: req.params.userId });
+    res.status(200).json(address);
+  } catch (err) {
+    res.status(500).json(err);
   }
-);
+});
 
 // router.post("/address", verifyTokenAndAuthorization, async (req, res) => {
 //   const userId = req.user.id;

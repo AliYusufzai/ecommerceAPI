@@ -3,7 +3,8 @@ const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const cors = require("cors");
-const bodyParser = require("body-parser");
+const passport = require("passport");
+const session = require("express-session");
 const userRoute = require("./routes/user");
 const authRoute = require("./routes/auth");
 const productRoute = require("./routes/product");
@@ -13,9 +14,12 @@ const passwordResetRoute = require("./routes/passwordReset");
 const addressRoute = require("./routes/address");
 const categoryRoute = require("./routes/category");
 const contactRoute = require("./routes/contactUs");
+const stripeRoute = require("./routes/stripe");
 
 //without this, we can't use dotenv
 dotenv.config();
+//Passport Config
+require("./middleware/passport")(passport);
 
 //connection to the database, its a promise
 const connection = mongoose
@@ -31,6 +35,7 @@ const connection = mongoose
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+//routes
 app.use(cors());
 app.use("/api/auth", authRoute);
 app.use("/api/users", userRoute);
@@ -41,7 +46,9 @@ app.use("/api/password-reset", passwordResetRoute);
 app.use("/api/address", addressRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/contact", contactRoute);
+app.use("/api/checkout", stripeRoute);
 
+//cors policy
 app.use(function (req, res, next) {
   res.setHeader(
     "Access-Control-Allow-Headers",
@@ -55,6 +62,20 @@ app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
+
+//session initialization
+app.use(
+  session({
+    secret: "ludwigdieter",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true }
+  })
+);
+
+//passport initialization
+app.use(passport.initialize());
+app.use(passport.session());
 
 //listen to the port
 app.listen(process.env.PORT || 5000, () => {

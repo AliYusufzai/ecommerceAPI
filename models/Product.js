@@ -4,14 +4,20 @@ const ProductSchema = new mongoose.Schema(
   {
     brand: { type: String, required: true },
     manufacturer: { type: String, required: true },
+    sku: { type: Number, required: true },
     title: { type: String, required: true },
     desc: { type: String, required: true },
     img: { type: Array },
     feature: { type: Boolean, default: false },
-    availability: { type: String, required: true },
+    availability: {
+      type: Number,
+      required: true,
+      min: 0,
+      max: 255
+    },
     reviews: [
       {
-        user: { type: Number },
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         name: { type: String },
         comment: { type: String }
       }
