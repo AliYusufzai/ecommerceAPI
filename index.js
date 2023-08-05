@@ -15,7 +15,6 @@ const addressRoute = require("./routes/address");
 const categoryRoute = require("./routes/category");
 const contactRoute = require("./routes/contactUs");
 const stripeRoute = require("./routes/stripe");
-// const oAuthRoute = require("./routes/oauth");
 const authRoutes = require("./routes/authRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 
@@ -36,6 +35,7 @@ app.use(
 );
 
 //Passport Config
+
 require("./middleware/passport");
 
 //connection to the database, its a promise
@@ -64,7 +64,6 @@ app.use("/api/address", addressRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/contact", contactRoute);
 app.use("/api/checkout", stripeRoute);
-// app.use("/auth", oAuthRoute);
 app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
 

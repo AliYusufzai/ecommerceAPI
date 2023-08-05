@@ -6,6 +6,7 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User");
 const config = require("../middleware/passport");
+const jwt = require("jsonwebtoken");
 
 // Configure Google Strategy
 passport.use(
@@ -34,7 +35,12 @@ passport.use(
             googleName: profile.displayName // Store the user's name obtained from Google OAuth
           });
         }
-        return done(null, user);
+        const accessToken = jwt.sign(
+          { id: user._id, isAdmin: user.isAdmin },
+          process.env.JWT_SEC,
+          { expiresIn: "3d" }
+        );
+        return done(null, user, accessToken);
       } catch (err) {
         return done(err, null);
       }
