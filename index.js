@@ -15,11 +15,28 @@ const addressRoute = require("./routes/address");
 const categoryRoute = require("./routes/category");
 const contactRoute = require("./routes/contactUs");
 const stripeRoute = require("./routes/stripe");
+// const oAuthRoute = require("./routes/oauth");
+const authRoutes = require("./routes/authRoutes");
+const profileRoutes = require("./routes/profileRoutes");
+
+// Set EJS as the view engine
+app.set("view engine", "ejs"); // Add this line
 
 //without this, we can't use dotenv
 dotenv.config();
+
+//session initialization
+app.use(
+  session({
+    secret: "ludwigdieter",
+    resave: false,
+    saveUninitialized: false
+    // cookie: { secure: true }
+  })
+);
+
 //Passport Config
-require("./middleware/passport")(passport);
+require("./middleware/passport");
 
 //connection to the database, its a promise
 const connection = mongoose
@@ -47,6 +64,9 @@ app.use("/api/address", addressRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/contact", contactRoute);
 app.use("/api/checkout", stripeRoute);
+// app.use("/auth", oAuthRoute);
+app.use("/auth", authRoutes);
+app.use("/profile", profileRoutes);
 
 //cors policy
 app.use(function (req, res, next) {
@@ -62,16 +82,6 @@ app.use(function (req, res, next) {
   res.setHeader("Access-Control-Allow-Credentials", true);
   next();
 });
-
-//session initialization
-app.use(
-  session({
-    secret: "ludwigdieter",
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true }
-  })
-);
 
 //passport initialization
 app.use(passport.initialize());

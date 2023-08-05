@@ -1,28 +1,38 @@
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const mongoose = require("mongoose");
-const User = require("../models/User");
+const GoogleStrategy = require("passport-google-oauth2").Strategy;
+const passport = require("passport");
+require("dotenv").config();
 
-module.exports = function (passport) {
-  passport.use(
-    new GoogleStrategy(
-      {
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "/auth/google/callback"
-        // scope: ["profile", "email"]
-      },
-      async (accessToken, refreshToken, profile, donek) => {
-        console.log(profile);
-        // callback(null, profile);
-      }
-    )
-  );
+const GOOGLE_CLIENT_ID =
+  "731526907781-h8602gs512ckm0d69c0u12npqg3pq8sv.apps.googleusercontent.com";
+const GOOGLE_CLIENT_SECRET = "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";
 
-  passport.serializeUser((user, done) => {
-    done(null, user.id);
-  });
-
-  passport.deserializeUser((user, done) => {
-    User.findById(id, (err, user) => done(err, user));
-  });
+module.exports = {
+  sessionSecret: "ludwigdieter",
+  google: {
+    clientID: GOOGLE_CLIENT_ID,
+    clientSecret: GOOGLE_CLIENT_SECRET,
+    callbackURL: "http://localhost:5000/auth/google/callback"
+  }
 };
+
+// passport.use(
+//   new GoogleStrategy(
+//     {
+//       clientID: GOOGLE_CLIENT_ID,
+//       clientSecret: GOOGLE_CLIENT_SECRET,
+//       callbackURL: "http://localhost:5000/auth/google/callback",
+//       passReqToCallback: true
+//     },
+//     function (request, accessToken, refreshToken, profile, done) {
+//       return done(null, profile);
+//     }
+//   )
+// );
+
+// passport.serializeUser((user, done) => {
+//   done(null, user);
+// });
+
+// passport.deserializeUser((user, done) => {
+//   done(null, user);
+// });
